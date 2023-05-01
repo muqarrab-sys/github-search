@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import RootReducer from './RootReducer';
+import { GithubSearchApi } from './Queries/GithubSearchApi';
 
 const persistConfig = {
   key: 'root',
@@ -10,10 +11,8 @@ const persistConfig = {
 
 const Store = configureStore({
   reducer: persistReducer(persistConfig, RootReducer),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(GithubSearchApi.middleware),
 });
-
-export type RootState = ReturnType<typeof Store.getState>;
-export type AppDispatch = typeof Store.dispatch;
 
 export const persistor = persistStore(Store);
 
