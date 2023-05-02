@@ -6,6 +6,8 @@ export interface SearchResponse<T = any> {
   total_count: number;
 }
 
+export type GithubSearchResult = SearchResponse<GithubUser | GithubRepo>;
+
 export interface GithubUser {
   avatar_url: string;
   events_url: string;

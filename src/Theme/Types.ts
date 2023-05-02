@@ -1,13 +1,13 @@
 import { ThemeConfig } from 'antd';
 
-export type ThemeType = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark';
 
 export interface CustomThemeConfig extends ThemeConfig {
-  type: ThemeType;
+  type: ThemeMode;
 }
 
 export declare type ThemeContextType = {
-  theme: CustomThemeConfig;
+  mode: ThemeMode;
   toggleTheme: () => void;
   isDark: boolean;
 };

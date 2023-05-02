@@ -1,1 +1,1 @@
-export const SEARCH_ROUTE = (entity: string, query: string) => `/search/${entity}/${query}`;
+export const SEARCH_ROUTE = '/search';

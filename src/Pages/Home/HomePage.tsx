@@ -1,83 +1,53 @@
-import { Col, Image, Layout, Row, Switch, Typography } from 'antd';
-import { useEffect } from 'react';
+import { Col, Image, Layout, Row, Space, Switch, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Assets from '../../Assets';
 import { FixLayout, SearchBar } from '../../Components';
-import useDebounce from '../../Hooks/useDebounce';
-import useSearchBar from '../../Hooks/useSearchBar';
-import { useSearchQuery } from '../../Store/Queries/GithubSearchApi';
-import { useTheme } from '../../Theme';
+import useSearch from '../../Hooks/useSearch';
 import { SEARCH_ROUTE } from '../../Router/routes';
+import { useTheme } from '../../Theme';
+import params from '../../Router/params';
 
 const { Title, Paragraph } = Typography;
 
 const LOGO_SIZE = 50;
 
 export default function HomePage() {
-  const { theme, isDark, toggleTheme } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const {
-    selectEntity,
-    setAutocompleteOptions,
-    autoCompleteOptions,
-    onSearchQueryChange,
-    selectedEntity,
-    searchQuery,
-    entities,
-    minimumSearchLength,
-  } = useSearchBar();
+  const { searchProps: searchParams } = useSearch({ searchAllOption: true });
 
-  const debouncedSearchQuery = useDebounce(searchQuery);
-
-  const { data } = useSearchQuery(
-    { query: debouncedSearchQuery, page: 1, entity: selectedEntity },
-    { skip: debouncedSearchQuery.length < minimumSearchLength },
-  );
-
-  useEffect(() => {
-    if (data) {
-      setAutocompleteOptions(data.items, debouncedSearchQuery);
-    }
-  }, [data]);
-
-  const onSelect = (value: string, option: { value: string; label: string; searchAll: boolean }) => {
-    if (option.searchAll) {
-      return navigate(SEARCH_ROUTE(selectedEntity, debouncedSearchQuery));
+  const onSelect = (_value?: string, options?: { value: string; label: string; searchAll?: boolean; url: string }) => {
+    if (options === undefined || options?.searchAll) {
+      return navigate({ pathname: SEARCH_ROUTE, search: `?${params.q}=${searchParams.query}&${params.type}=${searchParams.selectedEntity}` });
+    } else if (options.url) {
+      window.location = options.url as Location | (string & Location);
     }
   };
 
   return (
     <Layout>
       <FixLayout>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-          <div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
+          <Space direction="vertical">
             <Row justify={'center'} align={'middle'} gutter={16}>
               <Col span={4}>
-                <Image src={Assets.logos.github[theme.type]} style={{ width: LOGO_SIZE, height: LOGO_SIZE }} preview={false} />
+                <Image src={Assets.logos.github['dark']} style={{ width: LOGO_SIZE, height: LOGO_SIZE }} preview={false} />
               </Col>
-              <Col span={16}>
+              <Col span={15}>
                 <Typography>
-                  <Title level={3} style={{ fontSize: 20, lineHeight: 0 }}>
+                  <Title level={3} style={{ lineHeight: 0 }}>
                     GitHub Searcher
                   </Title>
                   <Paragraph>Search users or repositories below</Paragraph>
                 </Typography>
               </Col>
-              <Col span={4}>
+              <Col span={5}>
                 <Switch checkedChildren="Dark" unCheckedChildren="Light" checked={isDark} onChange={toggleTheme} />
               </Col>
             </Row>
 
-            <SearchBar
-              autoCompleteOptions={autoCompleteOptions}
-              selectOptions={entities}
-              inputValue={searchQuery}
-              defaultSelectValue={selectedEntity}
-              onAutoCompleteSelect={onSelect}
-              onInputChange={onSearchQueryChange}
-              onSelectChange={selectEntity}
-            />
-          </div>
+            <SearchBar {...searchParams} onAutoCompleteSelect={onSelect} onPressEnter={onSelect} />
+          </Space>
         </div>
       </FixLayout>
     </Layout>

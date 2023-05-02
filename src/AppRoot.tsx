@@ -6,12 +6,12 @@ import { useTheme } from './Theme';
 import toastConfigs from './Theme/Configs/ToasterConfigs';
 
 function AppRoot() {
-  const { theme } = useTheme();
+  const { mode } = useTheme();
 
   return (
     <Fragment>
       <RouterProvider router={AppRouter} />
-      <ToastContainer {...toastConfigs} theme={theme.type} />
+      <ToastContainer {...toastConfigs} theme={mode} />
     </Fragment>
   );
 }

@@ -9,7 +9,7 @@ const AppRouter = createBrowserRouter([
     errorElement: <Pages.ErrorPage />,
   },
   {
-    path: ROUTES.SEARCH_ROUTE(':entity', ':query'),
+    path: ROUTES.SEARCH_ROUTE,
     element: <Pages.SearchPage />,
     errorElement: <Pages.ErrorPage />,
   },

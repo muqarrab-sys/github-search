@@ -1,36 +1,36 @@
 import { ConfigProvider } from 'antd';
 import React, { createContext } from 'react';
-import { THEME_TYPE } from '../../Constants';
+import { THEME_MODE } from '../../Constants';
 import * as configs from '../Configs/ThemeConfigs';
-import { ThemeContextType, ThemeType } from '../Types';
+import { ThemeContextType, ThemeMode as ThemeMode } from '../Types';
 import { StyleProvider } from '@ant-design/cssinjs';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const defaultType = (localStorage.getItem(THEME_TYPE) || 'light') as ThemeType;
+const defaultMode = (localStorage.getItem(THEME_MODE) || 'light') as ThemeMode;
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [themeType, setThemeType] = React.useState<ThemeType>(defaultType);
+  const [mode, setThemeMode] = React.useState<ThemeMode>(defaultMode);
 
-  const isDark = themeType === 'dark';
+  const isDark = mode === 'dark';
 
   const theme = React.useMemo(
     () => ({
-      type: themeType,
-      ...configs[themeType as ThemeType],
+      type: mode,
+      ...configs[mode as ThemeMode],
     }),
-    [themeType],
+    [mode],
   );
 
   const toggleTheme = () => {
-    const type = themeType === 'light' ? 'dark' : 'light';
+    const type = mode === 'light' ? 'dark' : 'light';
 
-    localStorage.setItem(THEME_TYPE, type);
-    setThemeType(type);
+    localStorage.setItem(THEME_MODE, type);
+    setThemeMode(type);
   };
 
   return (
-    <ThemeContext.Provider value={{ toggleTheme, theme, isDark }}>
+    <ThemeContext.Provider value={{ toggleTheme, isDark, mode }}>
       <ConfigProvider theme={theme}>
         <StyleProvider>{children}</StyleProvider>
       </ConfigProvider>
