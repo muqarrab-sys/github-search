@@ -12,7 +12,7 @@ const { Title, Paragraph } = Typography;
 const LOGO_SIZE = 50;
 
 export default function HomePage() {
-  const { isDark, toggleTheme } = useTheme();
+  const { mode, isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const { searchProps: searchParams } = useSearch({ searchAllOption: true });
 
@@ -31,7 +31,7 @@ export default function HomePage() {
           <Space direction="vertical">
             <Row justify={'center'} align={'middle'} gutter={16}>
               <Col span={4}>
-                <Image src={Assets.logos.github['dark']} style={{ width: LOGO_SIZE, height: LOGO_SIZE }} preview={false} />
+                <Image src={Assets.logos.github[mode]} style={{ width: LOGO_SIZE, height: LOGO_SIZE }} preview={false} />
               </Col>
               <Col span={15}>
                 <Typography>

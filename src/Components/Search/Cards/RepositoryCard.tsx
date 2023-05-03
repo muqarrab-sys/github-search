@@ -16,7 +16,6 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
 
         <Divider />
 
-        {/* <Space size={[0, 8]} direction="vertical"> */}
         <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }} style={{ width: 300 }}>
           {repo.description}
         </Typography.Paragraph>
@@ -37,27 +36,29 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
           <Space size={[0, 8]} wrap>
             {repo.topics.slice(0, 3).map(topic => {
               return (
-                <Tag key={topic} bordered={false}>
+                <Tag color="blue" key={topic} bordered={false}>
                   {topic}
                 </Tag>
               );
             })}
           </Space>
         </Tooltip>
-        {/* </Space> */}
 
         <Divider />
 
         <Typography>
-          {repo.language && <Typography.Text> {repo.language} . </Typography.Text>}
+          {repo.language && <Typography.Text type="secondary"> {repo.language} . </Typography.Text>}
 
           {repo.stargazers_count && (
             <>
-              <StarOutlined />
-              <Typography.Text> {SharedUtils.NumberFormat(repo.stargazers_count)}</Typography.Text>
+              <Typography.Text type="secondary">
+                <StarOutlined /> {SharedUtils.NumberFormat(repo.stargazers_count)}
+              </Typography.Text>
             </>
           )}
-          {repo.updated_at && <Typography.Text> . updated {SharedUtils.elapsedTime(new Date(repo.updated_at), new Date())} ago</Typography.Text>}
+          {repo.updated_at && (
+            <Typography.Text type="secondary"> . updated {SharedUtils.elapsedTime(new Date(repo.updated_at), new Date())} ago</Typography.Text>
+          )}
         </Typography>
       </Card>
     </Skeleton>

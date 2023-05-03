@@ -1,4 +1,3 @@
-import { Divider, Typography } from 'antd';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchBarProps } from '../Components/Shared/SearchBar/SearchBar';
@@ -6,7 +5,6 @@ import { ENTITIES } from '../Constants';
 import params from '../Router/params';
 import { useSearchReposQuery, useSearchUsersQuery } from '../Store/Queries/GithubSearchApi';
 import { GithubSearchResult, SearchEntity } from '../Types/GithubSearch.types';
-import Mappers from '../Utils/Mappers';
 import useDebounce from './useDebounce';
 
 type UseSearch = (options?: { useParams?: boolean; searchAllOption?: boolean }) => {
@@ -18,7 +16,6 @@ type UseSearch = (options?: { useParams?: boolean; searchAllOption?: boolean }) 
 };
 
 const MINIMUM_SEARCHABLE_LENGTH = 3;
-const SEARCH_ALL_POSTFIX = ':search_query';
 
 const useSearch: UseSearch = options => {
   const entities = useMemo(() => {
@@ -27,13 +24,16 @@ const useSearch: UseSearch = options => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const query = searchParams.get(params.q) || '';
-  const entity = (searchParams.get(params.type) as SearchEntity) || undefined;
+  const entityParam = ((options?.useParams ? searchParams.get(params.type) : entities[0].value) || entities[0].value) as SearchEntity;
+  const queryParam = (options?.useParams ? searchParams.get(params.q) : '') || '';
 
-  const [selectedEntity, setEntity] = useState<SearchEntity>(options?.useParams ? entity : (entities[0].value as SearchEntity));
-  const [searchQuery, setQuery] = useState(options?.useParams ? query : '');
+  const [selectedEntity, setEntity] = useState<SearchEntity>(entityParam);
+  const [searchQuery, setQuery] = useState<string>(queryParam);
   const [page, setPage] = useState<number>(1);
-  const [autoCompleteOptions, setOptions] = useState<any>([]);
+
+  useEffect(() => {
+    setSearchParams({ q: queryParam, type: entityParam });
+  }, []);
 
   const debouncedSearchQuery = useDebounce(searchQuery);
 
@@ -47,15 +47,6 @@ const useSearch: UseSearch = options => {
     { skip: selectedEntity === ENTITIES.USERS || debouncedSearchQuery.length < MINIMUM_SEARCHABLE_LENGTH },
   );
 
-  useEffect(() => {
-    if (users) {
-      setAutocompleteOptions(users.items, debouncedSearchQuery);
-    }
-    if (repositories) {
-      setAutocompleteOptions(repositories.items, debouncedSearchQuery);
-    }
-  }, [users, repositories]);
-
   const selectEntity = (value: SearchEntity) => {
     if (searchQuery.length < 3) setQuery('');
     setPage(1);
@@ -64,53 +55,17 @@ const useSearch: UseSearch = options => {
   };
 
   const onSearchQueryChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (searchQuery.length < MINIMUM_SEARCHABLE_LENGTH) setOptions([]);
     setPage(1);
     setQuery(event.target.value);
     if (options?.useParams) setSearchParams({ q: event.target.value, type: selectedEntity });
   };
 
-  const setAutocompleteOptions = (list: Array<any>, query?: string) => {
-    const autocompleteOptions = [];
-
-    if (options?.searchAllOption && query) {
-      autocompleteOptions.push({
-        label: <>Search</>,
-        options: [
-          {
-            value: query.concat(SEARCH_ALL_POSTFIX),
-            label: (
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {query}
-                <span>Search all of Github</span>
-              </div>
-            ),
-            searchAll: true,
-          },
-        ],
-      });
-    }
-
-    autocompleteOptions.push({
-      label: (
-        <>
-          {options?.searchAllOption && query && <Divider />}
-          <Typography.Text strong>{selectedEntity}</Typography.Text>
-        </>
-      ),
-      options: [...Mappers.GithubResultsToAutocomplete(list, selectedEntity)],
-    });
-
-    setOptions(autocompleteOptions);
-  };
-
   return {
     searchProps: {
-      defaultQuery: query,
-      defaultSelectedEntity: entity,
+      defaultQuery: queryParam,
+      defaultSelectedEntity: entityParam,
       query: searchQuery,
       selectedEntity: selectedEntity,
-      autoCompleteOptions: autoCompleteOptions,
       entities,
       onInputChange: onSearchQueryChange,
       onSelectChange: selectEntity,
