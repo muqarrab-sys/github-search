@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GithubSearchResult, SearchEntity } from '../../Types/GithubSearch.types';
+import { GithubSearchResult } from '../../Types/GithubSearch.types';
 
 const queryClient = fetchBaseQuery({
   baseUrl: 'https://api.github.com/search',
   headers: {
     Accept: 'application/vnd.github+json',
-    Authorization: 'Bearer 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',
+    Authorization: import.meta.env.VITE_GITHUB_KEY,
     'X-GitHub-Api-Version': '2022-11-28',
   },
 });
