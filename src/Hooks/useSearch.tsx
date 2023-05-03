@@ -1,7 +1,7 @@
 import { Divider, Typography } from 'antd';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { SearchBarProps } from '../Components/SearchBar/SearchBar';
+import { SearchBarProps } from '../Components/Shared/SearchBar/SearchBar';
 import { ENTITIES } from '../Constants';
 import params from '../Router/params';
 import { useSearchReposQuery, useSearchUsersQuery } from '../Store/Queries/GithubSearchApi';
@@ -18,7 +18,7 @@ type UseSearch = (options?: { useParams?: boolean; searchAllOption?: boolean }) 
 };
 
 const MINIMUM_SEARCHABLE_LENGTH = 3;
-const SEARCH_ALL_POSTFIX = '_search_query';
+const SEARCH_ALL_POSTFIX = ':search_query';
 
 const useSearch: UseSearch = options => {
   const entities = useMemo(() => {
@@ -57,16 +57,17 @@ const useSearch: UseSearch = options => {
   }, [users, repositories]);
 
   const selectEntity = (value: SearchEntity) => {
+    if (searchQuery.length < 3) setQuery('');
     setPage(1);
     setEntity(value);
-    setSearchParams({ q: searchQuery, type: value });
+    if (options?.useParams) setSearchParams({ q: searchQuery, type: value });
   };
 
   const onSearchQueryChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (searchQuery.length < MINIMUM_SEARCHABLE_LENGTH) setOptions([]);
     setPage(1);
     setQuery(event.target.value);
-    setSearchParams({ q: event.target.value, type: selectedEntity });
+    if (options?.useParams) setSearchParams({ q: event.target.value, type: selectedEntity });
   };
 
   const setAutocompleteOptions = (list: Array<any>, query?: string) => {

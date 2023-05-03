@@ -1,5 +1,5 @@
 import { StarOutlined } from '@ant-design/icons';
-import { Avatar, Card, Divider, Skeleton, Space, Tag, Typography } from 'antd';
+import { Avatar, Card, Divider, Skeleton, Space, Tag, Tooltip, Typography } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { FC } from 'react';
 import { GithubRepo } from '../../../Types/GithubSearch.types';
@@ -16,13 +16,26 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
 
         <Divider />
 
-        <Space size={[0, 8]} direction="vertical">
-          <Typography>
-            <Typography.Text>{repo.description}</Typography.Text>
-          </Typography>
+        {/* <Space size={[0, 8]} direction="vertical"> */}
+        <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }} style={{ width: 300 }}>
+          {repo.description}
+        </Typography.Paragraph>
 
+        <Tooltip
+          title={() => (
+            <Space wrap size={[0, 8]}>
+              {repo.topics.map(topic => {
+                return (
+                  <Tag key={topic} bordered={false}>
+                    {topic}
+                  </Tag>
+                );
+              })}
+            </Space>
+          )}
+        >
           <Space size={[0, 8]} wrap>
-            {repo.topics.slice(0, 5).map(topic => {
+            {repo.topics.slice(0, 3).map(topic => {
               return (
                 <Tag key={topic} bordered={false}>
                   {topic}
@@ -30,7 +43,8 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
               );
             })}
           </Space>
-        </Space>
+        </Tooltip>
+        {/* </Space> */}
 
         <Divider />
 

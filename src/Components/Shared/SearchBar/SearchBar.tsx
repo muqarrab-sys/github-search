@@ -1,6 +1,6 @@
 import { AutoComplete, Col, Input, Row, Select } from 'antd';
 import React, { FC } from 'react';
-import { SearchEntity } from '../../Types/GithubSearch.types';
+import { SearchEntity } from '../../../Types/GithubSearch.types';
 
 export interface SearchBarProps {
   defaultQuery?: string;

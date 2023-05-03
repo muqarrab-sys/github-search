@@ -1,6 +1,6 @@
 import { Button, Layout, Typography } from 'antd';
 import { useNavigate, useRouteError } from 'react-router-dom';
-import { FixLayout } from '../../Components';
+import { FixLayout } from '../../Components/Shared';
 
 export default function ErrorPage() {
   const error = useRouteError() as Error;

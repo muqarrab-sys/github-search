@@ -1,7 +1,7 @@
 import { Col, Image, Layout, Row, Space, Switch, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Assets from '../../Assets';
-import { FixLayout, SearchBar } from '../../Components';
+import { FixLayout, SearchBar } from '../../Components/Shared';
 import useSearch from '../../Hooks/useSearch';
 import { SEARCH_ROUTE } from '../../Router/routes';
 import { useTheme } from '../../Theme';
