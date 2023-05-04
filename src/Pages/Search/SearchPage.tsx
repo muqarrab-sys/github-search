@@ -14,7 +14,7 @@ function SearchPage() {
   const { selectedEntity } = searchProps;
 
   const results = searchProps.selectedEntity === ENTITIES.USERS ? users : repositories;
-
+  console.log(results);
   return (
     <Layout>
       <FixLayout
@@ -44,6 +44,7 @@ function SearchPage() {
                 }
                 endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                 scrollableTarget="scrollableDiv"
+                style={{ overflow: 'hidden' }}
               >
                 <List
                   dataSource={results?.items}

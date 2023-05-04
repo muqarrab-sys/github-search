@@ -21,6 +21,9 @@ export const GithubSearchApi = createApi({
         return `/users?q=${args.query}&page=${args.page}`;
       },
       merge: (currentCache, newItems, otherArgs) => {
+        currentCache.total_count = newItems.total_count;
+        currentCache.incomplete_results = newItems.incomplete_results;
+
         if (otherArgs.arg.page === 1) {
           currentCache.items = newItems.items;
         } else {
@@ -37,6 +40,9 @@ export const GithubSearchApi = createApi({
         return `/repositories?q=${args.query}&page=${args.page}`;
       },
       merge: (currentCache, newItems, otherArgs) => {
+        currentCache.total_count = newItems.total_count;
+        currentCache.incomplete_results = newItems.incomplete_results;
+
         if (otherArgs.arg.page === 1) {
           currentCache.items = newItems.items;
         } else {
