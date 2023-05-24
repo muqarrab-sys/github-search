@@ -1,6 +1,6 @@
 import { ConfigProvider } from 'antd';
 import React, { createContext } from 'react';
-import { THEME_MODE } from '../../Constants';
+import { THEME_MODE } from '~/Constants';
 import * as configs from '../Configs/ThemeConfigs';
 import { ThemeContextType, ThemeMode as ThemeMode } from '../Types';
 import { StyleProvider } from '@ant-design/cssinjs';

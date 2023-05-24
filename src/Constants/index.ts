@@ -1,4 +1,4 @@
-import { SearchEntity } from '../Types/GithubSearch.types';
+import { SearchEntity } from '~/Types/GithubSearch.types';
 
 export const THEME_MODE = 'theme:mode';
 

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GithubSearchResult } from '../../Types/GithubSearch.types';
+import { GithubSearchResult } from '~/Types/GithubSearch.types';
 
 const queryClient = fetchBaseQuery({
   baseUrl: 'https://api.github.com/search',

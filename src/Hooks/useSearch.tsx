@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { SearchBarProps } from '../Components/Shared/SearchBar/SearchBar';
-import { ENTITIES } from '../Constants';
-import params from '../Router/params';
-import { useSearchReposQuery, useSearchUsersQuery } from '../Store/Queries/GithubSearchApi';
-import { GithubSearchResult, SearchEntity } from '../Types/GithubSearch.types';
+import { SearchBarProps } from '~/Components/Shared/SearchBar/SearchBar';
+import { ENTITIES } from '~/Constants';
+import params from '~/Router/params';
+import { useSearchReposQuery, useSearchUsersQuery } from '~/Store/Queries/GithubSearchApi';
+import { GithubSearchResult, SearchEntity } from '~/Types/GithubSearch.types';
 import useDebounce from './useDebounce';
 
 type UseSearch = (options?: { useParams?: boolean; searchAllOption?: boolean }) => {
@@ -13,6 +13,10 @@ type UseSearch = (options?: { useParams?: boolean; searchAllOption?: boolean }) 
   setPage: React.Dispatch<React.SetStateAction<number>>;
   users: GithubSearchResult | undefined;
   repositories: GithubSearchResult | undefined;
+  isFetchingUsers: boolean;
+  isLoadingUsers: boolean;
+  isFetchingRepos: boolean;
+  isLoadingRepos: boolean;
 };
 
 const MINIMUM_SEARCHABLE_LENGTH = 3;
@@ -37,15 +41,25 @@ const useSearch: UseSearch = options => {
 
   const debouncedSearchQuery = useDebounce(searchQuery);
 
-  const { data: users } = useSearchUsersQuery(
+  const {
+    data: users,
+    isFetching: isFetchingUsers,
+    isLoading: isLoadingUsers,
+  } = useSearchUsersQuery(
     { query: debouncedSearchQuery, page: page },
     { skip: selectedEntity === ENTITIES.REPOSITORIES || debouncedSearchQuery.length < MINIMUM_SEARCHABLE_LENGTH },
   );
 
-  const { data: repositories } = useSearchReposQuery(
+  const {
+    data: repositories,
+    isFetching: isFetchingRepos,
+    isLoading: isLoadingRepos,
+  } = useSearchReposQuery(
     { query: debouncedSearchQuery, page: page },
     { skip: selectedEntity === ENTITIES.USERS || debouncedSearchQuery.length < MINIMUM_SEARCHABLE_LENGTH },
   );
+
+  console.log({ isFetchingUsers, isLoadingUsers, isFetchingRepos, isLoadingRepos });
 
   const selectEntity = (value: SearchEntity) => {
     if (searchQuery.length < 3) setQuery('');
@@ -69,11 +83,16 @@ const useSearch: UseSearch = options => {
       entities,
       onInputChange: onSearchQueryChange,
       onSelectChange: selectEntity,
+      loading: isLoadingUsers || isLoadingRepos,
     },
     users,
     repositories,
     currentPage: page,
     setPage,
+    isFetchingUsers,
+    isLoadingUsers,
+    isFetchingRepos,
+    isLoadingRepos,
   };
 };
 

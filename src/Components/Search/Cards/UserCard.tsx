@@ -1,16 +1,16 @@
-import { Avatar, Card, Skeleton } from 'antd';
+import { Card, Skeleton } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { FC } from 'react';
-import { GithubUser } from '../../../Types/GithubSearch.types';
+import { GithubUser } from '~/Types/GithubSearch.types';
 
 const UserCard: FC<{ user: GithubUser; loading?: boolean }> = ({ user, loading }) => {
   const onClick = () => {
-    window.location = user.html_url as Location | (string & Location);
+    window.open(user.html_url, '_blank', 'noreferrer');
   };
   return (
     <Skeleton loading={loading} avatar active>
-      <Card onClick={onClick} size="small" hoverable>
-        <Meta avatar={<Avatar src={user.avatar_url} />} title={user.login} />
+      <Card cover={<img src={user.avatar_url} />} onClick={onClick} size="small" hoverable>
+        <Meta title={user.login} />
       </Card>
     </Skeleton>
   );

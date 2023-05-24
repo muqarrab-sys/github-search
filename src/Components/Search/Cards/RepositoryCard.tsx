@@ -2,13 +2,14 @@ import { StarOutlined } from '@ant-design/icons';
 import { Avatar, Card, Divider, Skeleton, Space, Tag, Tooltip, Typography } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { FC } from 'react';
-import { GithubRepo } from '../../../Types/GithubSearch.types';
-import SharedUtils from '../../../Utils/SharedUtils';
+import { GithubRepo } from '~/Types/GithubSearch.types';
+import SharedUtils from '~/Utils/SharedUtils';
 
 const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loading }) => {
   const onClick = () => {
-    window.location = repo.html_url as Location | (string & Location);
+    window.open(repo.html_url, '_blank', 'noreferrer');
   };
+
   return (
     <Skeleton loading={loading} avatar active>
       <Card onClick={onClick} size="small" hoverable>
@@ -16,9 +17,7 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
 
         <Divider />
 
-        <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }} style={{ width: 300 }}>
-          {repo.description}
-        </Typography.Paragraph>
+        <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }}>{repo.description}</Typography.Paragraph>
 
         <Tooltip
           title={() => (
@@ -52,7 +51,7 @@ const RepositoryCard: FC<{ repo: GithubRepo; loading?: boolean }> = ({ repo, loa
           {repo.stargazers_count && (
             <>
               <Typography.Text type="secondary">
-                <StarOutlined /> {SharedUtils.NumberFormat(repo.stargazers_count)}
+                <StarOutlined /> {SharedUtils.numberFormat(repo.stargazers_count)}
               </Typography.Text>
             </>
           )}

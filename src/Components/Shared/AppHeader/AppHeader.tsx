@@ -1,13 +1,11 @@
-import { Col, Image, Row, Switch, Typography } from 'antd';
-import { FC, Fragment } from 'react';
-import Assets from '../../../Assets';
+import { Col, Image, Row, Space, Switch, Typography, theme } from 'antd';
+import { FC } from 'react';
+import Assets from '~/Assets';
+import { useTheme } from '~/Theme';
 import { SearchBar } from '..';
-import { useTheme } from '../../../Theme';
 import { SearchBarProps } from '../SearchBar/SearchBar';
 
-const { Title, Paragraph } = Typography;
-
-const LOGO_SIZE = 40;
+const { Title, Text } = Typography;
 
 interface HeaderProps {
   searchProps: SearchBarProps;
@@ -15,35 +13,38 @@ interface HeaderProps {
 
 const AppHeader: FC<HeaderProps> = ({ searchProps }) => {
   const { mode, isDark, toggleTheme } = useTheme();
+  const { token } = theme.useToken();
 
   return (
-    <Fragment>
-      <Row align={'middle'}>
-        <Col span={8} />
-        <Col span={1}>
-          <Image src={Assets.logos.github[mode]} style={{ width: LOGO_SIZE, height: LOGO_SIZE }} preview={false} />
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Row align={'middle'} justify={'center'} gutter={10}>
+        <Col sm={18} md={10}>
+          <Row align={'middle'} gutter={token.sizeXS}>
+            <Col>
+              <Image src={Assets.logos.github[mode]} style={{ width: token.sizeXXL, height: token.sizeXXL }} preview={false} />
+            </Col>
+
+            <Col>
+              <Typography style={{ marginTop: -6 }}>
+                <Title level={3} style={{ lineHeight: 0 }}>
+                  GitHub Searcher
+                </Title>
+                <Text>Search users or repositories below</Text>
+              </Typography>
+            </Col>
+          </Row>
         </Col>
-        <Col span={5}>
-          <Typography>
-            <Title level={3} style={{ lineHeight: 0 }}>
-              GitHub Searcher
-            </Title>
-            <Paragraph>Search users or repositories below</Paragraph>
-          </Typography>
-        </Col>
-        <Col span={2} style={{ textAlign: 'right' }}>
+        <Col sm={6} md={2} style={{ textAlign: 'right' }}>
           <Switch checkedChildren="Dark" unCheckedChildren="Light" checked={isDark} onChange={toggleTheme} />
         </Col>
-        <Col span={8} />
       </Row>
-      <Row>
-        <Col span={8} />
-        <Col span={8}>
+
+      <Row justify={'center'} align={'middle'}>
+        <Col sm={24} md={12}>
           <SearchBar {...searchProps} />
         </Col>
-        <Col span={8} />
       </Row>
-    </Fragment>
+    </Space>
   );
 };
 

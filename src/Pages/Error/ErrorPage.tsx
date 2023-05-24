@@ -1,11 +1,14 @@
 import { Button, Layout, Typography } from 'antd';
 import { useNavigate, useRouteError } from 'react-router-dom';
-import { FixLayout } from '../../Components/Shared';
+import { FixLayout } from '~/Components/Shared';
+
+interface IError extends Error {
+  statusText: string;
+}
 
 export default function ErrorPage() {
-  const error = useRouteError() as Error;
+  const error = useRouteError() as IError;
   const navigate = useNavigate();
-  console.log(error);
 
   return (
     <Layout>
